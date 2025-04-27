@@ -1,0 +1,51 @@
+@model Financify.Models.Budget
+
+@{
+    ViewData["Title"] = "Edit Budget";
+}
+
+<h2>Edit Budget</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="BudgetId" />
+    <input type="hidden" asp-for="UserId" />
+
+    <div class="form-group">
+        <label asp-for="Income"></label>
+        <input asp-for="Income" class="form-control" />
+        <span asp-validation-for="Income" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FoodBudget"></label>
+        <input asp-for="FoodBudget" class="form-control" />
+        <span asp-validation-for="FoodBudget" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="HousingBudget"></label>
+        <input asp-for="HousingBudget" class="form-control" />
+        <span asp-validation-for="HousingBudget" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EntertainmentBudget"></label>
+        <input asp-for="EntertainmentBudget" class="form-control" />
+        <span asp-validation-for="EntertainmentBudget" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OtherBudget"></label>
+        <input asp-for="OtherBudget" class="form-control" />
+        <span asp-validation-for="OtherBudget" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="ViewBudgets" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

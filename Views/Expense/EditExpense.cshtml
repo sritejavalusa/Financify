@@ -1,0 +1,53 @@
+@model Financify.Models.Expense
+
+@{
+    ViewData["Title"] = "Edit Expense";
+}
+
+<h2>Edit Expense</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="EditExpense" method="post">
+    <input type="hidden" asp-for="ExpenseId" />
+
+    <div class="form-group">
+        <label>Date</label>
+        <input asp-for="Date" class="form-control" type="date" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select asp-for="Category" class="form-control">
+            <option value="">-- Select --</option>
+            <option>Food</option>
+            <option>Housing</option>
+            <option>Entertainment</option>
+            <option>Other</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Amount</label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Notes</label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="ViewExpenses" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

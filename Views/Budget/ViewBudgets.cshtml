@@ -1,0 +1,75 @@
+@model List<Financify.Models.Budget>
+
+@{
+    ViewData["Title"] = "View Budgets";
+    var month = ViewBag.SelectedMonth as int?;
+    var year = ViewBag.SelectedYear as int?;
+}
+
+<h2>View Budgets</h2>
+
+<form method="get" asp-action="ViewBudgets">
+    <div class="form-inline mb-3">
+        <select name="month" class="form-control mr-2">
+            <option value="">-- Select Month --</option>
+            @for (int m = 1; m <= 12; m++)
+            {
+                <option value="@m" selected="@(month == m ? "selected" : null)">
+                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                </option>
+            }
+        </select>
+
+        <input type="number" name="year" class="form-control mr-2" placeholder="Year" value="@year" min="2000" max="2100" />
+        <button type="submit" class="btn btn-secondary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p>No budgets found for selected month and year.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Income</th>
+                <th>Food</th>
+                <th>Housing</th>
+                <th>Entertainment</th>
+                <th>Other</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var monthName = item.Month >= 1 && item.Month <= 12
+                    ? System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month)
+                    : "Invalid Month";
+
+                <tr>
+                    <td>@monthName</td>
+                    <td>@item.Year</td>
+                    <td>@item.Income</td>
+                    <td>@item.FoodBudget</td>
+                    <td>@item.HousingBudget</td>
+                    <td>@item.EntertainmentBudget</td>
+                    <td>@item.OtherBudget</td>
+                    <td>@item.TotalBudget</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.BudgetId" class="btn btn-sm btn-primary">Edit</a>
+
+                        <form asp-action="Delete" asp-route-id="@item.BudgetId" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this budget?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

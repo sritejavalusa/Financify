@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Track Your Savings";
+    var total = ViewBag.TotalSaved;
+    var streak = ViewBag.CurrentStreak;
+    var maxStreak = ViewBag.MaxStreak;
+    var badges = ViewBag.Badges as List<Financify.Models.Badge>;
+}
+<h2>🎯 Your Savings Dashboard</h2>
+
+<p><strong>Total Saved:</strong> $@total</p>
+<p><strong>Current Streak:</strong> @streak days</p>
+<p><strong>Max Streak:</strong> @maxStreak days</p>
+
+<h3>🏆 Your Badges</h3>
+@if (badges != null && badges.Count > 0)
+{
+    <ul class="list-group">
+        @foreach (var badge in badges)
+        {
+            <li class="list-group-item">
+                <strong>@badge.Name</strong> - @badge.Description
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No badges yet... keep saving!</p>
+}

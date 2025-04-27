@@ -1,0 +1,49 @@
+@model Financify.Models.Budget
+@{
+    ViewData["Title"] = "Create Monthly Budget";
+
+    int year = ViewBag.Year ?? DateTime.Now.Year;
+    int month = ViewBag.Month ?? DateTime.Now.Month;
+    string monthName = new DateTime(year, month, 1).ToString("MMMM");
+}
+
+<h2>Create Budget for @monthName @ViewBag.Year</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+else
+{
+    <form asp-action="CreateMonthly" method="post">
+        <input type="hidden" name="Month" value="@ViewBag.Month" />
+        <input type="hidden" name="Year" value="@ViewBag.Year" />
+
+        <div class="form-group">
+            <label>Income</label>
+            <input asp-for="Income" class="form-control" />
+            <span asp-validation-for="Income" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Food</label>
+            <input asp-for="FoodBudget" class="form-control" />
+            <span asp-validation-for="FoodBudget" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Housing</label>
+            <input asp-for="HousingBudget" class="form-control" />
+            <span asp-validation-for="HousingBudget" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Entertainment</label>
+            <input asp-for="EntertainmentBudget" class="form-control" />
+            <span asp-validation-for="EntertainmentBudget" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Other</label>
+            <input asp-for="OtherBudget" class="form-control" />
+            <span asp-validation-for="OtherBudget" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success">Create</button>
+    </form>
+}
