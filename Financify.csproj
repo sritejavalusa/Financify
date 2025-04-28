@@ -20,6 +20,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>

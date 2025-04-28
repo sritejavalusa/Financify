@@ -1,0 +1,101 @@
+@{
+    ViewData["Title"] = "Category-wise Spending";
+}
+
+<h2>Category-wise Spending</h2>
+
+<!-- Form to filter by month and year -->
+<form method="get" asp-action="CategoryWiseGraph">
+    <div class="form-inline mb-3">
+        <select name="month" class="form-control mr-2">
+            <option value="">-- Select Month --</option>
+            @for (int m = 1; m <= 12; m++)
+            {
+                <option value="@m" selected="@(ViewBag.SelectedMonth == m ? "selected" : null)">
+                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                </option>
+            }
+        </select>
+
+        <input type="number" name="year" class="form-control mr-2" placeholder="Year" value="@ViewBag.SelectedYear" min="2000" max="2100" />
+        <button type="submit" class="btn btn-secondary">Filter</button>
+    </div>
+</form>
+
+<!-- Display message if no data is found -->
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <div class="alert alert-info">
+        @ViewBag.Message
+    </div>
+}
+else
+{
+    <!-- Canvas element for the pie chart -->
+    <div class="chart-container">
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js via CDN -->
+
+    <script>
+        // Prepare the data to render the chart
+        var categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
+        var amounts = @Html.Raw(Json.Serialize(ViewBag.Amounts));
+
+        console.log("Categories:", categories);
+        console.log("Amounts:", amounts);
+
+        // Check if data is available for the chart
+        if (categories.length > 0 && amounts.length > 0) {
+            // Create the chart
+            var ctx = document.getElementById('categoryChart').getContext('2d');
+            var categoryChart = new Chart(ctx, {
+                type: 'pie', // Change to 'bar' for bar chart
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'Category-wise Spending',
+                        data: amounts,
+                        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FFFF33', '#FF33FF'], // Customize colors
+                        borderColor: '#ffffff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false // Allow resizing with the container
+                }
+            });
+        } else {
+            // Handle the case when there's no data
+            console.log("No data available for the chart.");
+        }
+    </script>
+}
+
+<style>
+    /* Style for chart container to control size */
+    .chart-container {
+        position: relative;
+        width: 80%;  /* Adjust the width as per your need */
+        max-width: 600px; /* Limit the max width */
+        height: 400px; /* Set the height */
+        margin: auto;
+    }
+
+    /* You can also apply more responsiveness here, for example: */
+    @@media (max-width: 768px) {
+        .chart-container {
+            width: 90%;
+            height: 300px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .chart-container {
+            width: 100%;
+            height: 250px;
+        }
+    }
+</style>

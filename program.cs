@@ -1,6 +1,5 @@
 using Financify.Data;
 using Financify.Models;
-using Financify.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Configure Database Connections
-
 builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -35,6 +33,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+// Enable support for HTTPS redirection and set default URLs
+builder.Services.AddHttpsRedirection(options =>
+{
+    options.HttpsPort = 5006; // Adjust if your HTTPS port is different
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -44,13 +48,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // This is needed to redirect HTTP to HTTPS
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // 
-app.UseAuthorization();
+app.UseAuthentication(); // Ensure authentication middleware is applied
+app.UseAuthorization();  // Ensure authorization middleware is applied
 
 app.MapControllerRoute(
     name: "default",
@@ -61,7 +65,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AuthDbContext>();
 
-    // ✅ Call seed logic from Badge class
+    // ✅ Call seed logic from Badge class (if needed)
     Badge.Seed(context);
 }
 

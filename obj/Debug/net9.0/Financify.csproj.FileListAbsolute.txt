@@ -205,3 +205,4 @@ C:\Users\HP\Downloads\ReBuild\Financify\Financify\obj\Debug\net9.0\refint\Financ
 C:\Users\HP\Downloads\ReBuild\Financify\Financify\obj\Debug\net9.0\Financify.pdb
 C:\Users\HP\Downloads\ReBuild\Financify\Financify\obj\Debug\net9.0\Financify.genruntimeconfig.cache
 C:\Users\HP\Downloads\ReBuild\Financify\Financify\obj\Debug\net9.0\ref\Financify.dll
+C:\Users\HP\Downloads\ReBuild\Financify\Financify\obj\Debug\net9.0\Financify.sourcelink.json
