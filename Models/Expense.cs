@@ -19,7 +19,7 @@ namespace Financify.Models
 
         [Required]
         [StringLength(100)]
-        public string Category { get; set; }
+        public required string Category { get; set; }
 
         [Required]
         public decimal Amount { get; set; }

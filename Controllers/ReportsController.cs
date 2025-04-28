@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Financify.Data;
 using System.Diagnostics;
-using Microsoft.EntityFrameworkCore; // For logging
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims; // For logging
 
 namespace Financify.Controllers
 {
@@ -72,5 +73,47 @@ namespace Financify.Controllers
 
             return View();
         }
+
+        // Budget vs Actual Report
+        [HttpGet]
+        public async Task<IActionResult> BudgetVsActual(int? month, int? year)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (month == null || year == null)
+            {
+                ViewBag.Message = "Please select a month and year to view the report.";
+                return View();
+            }
+
+            var budget = await _context.Budgets
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.Month == month && b.Year == year);
+
+            if (budget == null)
+            {
+                ViewBag.Message = "No budget data found for the selected month and year.";
+                return View();
+            }
+
+            var expenses = await _context.Expenses
+                .Where(e => e.UserId == userId && e.Date.Month == month && e.Date.Year == year)
+                .ToListAsync();
+
+            var Model = new BudgetVsActualViewModel
+            {
+                Month = month.Value,
+                Year = year.Value,
+                MonthName = new DateTime(year.Value, month.Value, 1).ToString("MMMM"),
+                FoodBudget = budget.FoodBudget,
+                HousingBudget = budget.HousingBudget,
+                EntertainmentBudget = budget.EntertainmentBudget,
+                OtherBudget = budget.OtherBudget,
+                FoodSpent = expenses.Where(e => e.Category == "Food").Sum(e => e.Amount),
+                HousingSpent = expenses.Where(e => e.Category == "Housing").Sum(e => e.Amount),
+                EntertainmentSpent = expenses.Where(e => e.Category == "Entertainment").Sum(e => e.Amount),
+                OtherSpent = expenses.Where(e => e.Category == "Other").Sum(e => e.Amount)
+            };
+            return View(Model);
     }
+}
 }

@@ -1,0 +1,67 @@
+@model Financify.Models.BudgetVsActualViewModel
+
+@{
+    ViewData["Title"] = "Budget vs Actual Report";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" asp-action="BudgetVsActual">
+    <div class="form-inline mb-3">
+        <select name="month" class="form-control mr-2">
+            <option value="">-- Select Month --</option>
+            @for (int m = 1; m <= 12; m++)
+            {
+                <option value="@m">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)</option>
+            }
+        </select>
+
+        <input type="number" name="year" class="form-control mr-2" placeholder="Year" min="2000" max="2100" />
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+    </div>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">@ViewBag.Message</div>
+}
+else if (Model != null)
+{
+    <h4>@Model.MonthName @Model.Year</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Budgeted Amount</th>
+                <th>Actual Spent</th>
+                <th>Difference</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Food</td>
+                <td>@Model.FoodBudget</td>
+                <td>@Model.FoodSpent</td>
+                <td>@(Model.FoodBudget - Model.FoodSpent)</td>
+            </tr>
+            <tr>
+                <td>Housing</td>
+                <td>@Model.HousingBudget</td>
+                <td>@Model.HousingSpent</td>
+                <td>@(Model.HousingBudget - Model.HousingSpent)</td>
+            </tr>
+            <tr>
+                <td>Entertainment</td>
+                <td>@Model.EntertainmentBudget</td>
+                <td>@Model.EntertainmentSpent</td>
+                <td>@(Model.EntertainmentBudget - Model.EntertainmentSpent)</td>
+            </tr>
+            <tr>
+                <td>Other</td>
+                <td>@Model.OtherBudget</td>
+                <td>@Model.OtherSpent</td>
+                <td>@(Model.OtherBudget - Model.OtherSpent)</td>
+            </tr>
+        </tbody>
+    </table>
+}
