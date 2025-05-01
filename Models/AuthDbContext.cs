@@ -19,6 +19,9 @@ namespace Financify.Data
         public DbSet<Badge> Badges { get; set; }
         public DbSet<UserBadge> UserBadges { get; set; }
 
+        // ✅ Add Goal table
+        public DbSet<Goal> Goals { get; set; }  // Add this line
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -109,6 +112,23 @@ namespace Financify.Data
 
                 ub.Property(x => x.UserId).IsRequired();
                 ub.Property(x => x.EarnedDate).IsRequired();
+            });
+
+            // ✅ Goal Table Mapping
+            builder.Entity<Goal>(g =>
+            {
+                g.ToTable("Goals");
+                g.HasKey(x => x.GoalId);
+
+                g.Property(x => x.TargetAmount).HasColumnType("decimal(18,2)").IsRequired();
+                g.Property(x => x.CurrentAmount).HasColumnType("decimal(18,2)").IsRequired().HasDefaultValue(0);
+                g.Property(x => x.GoalName).IsRequired();  // Using GoalName instead of Description
+                g.Property(x => x.TargetDate).IsRequired();  // Using TargetDate instead of DueDate
+
+                g.HasOne(x => x.User)
+                 .WithMany()
+                 .HasForeignKey(x => x.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

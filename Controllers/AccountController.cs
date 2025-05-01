@@ -2,7 +2,10 @@ using Financify.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Financify.ViewModels;
+using System.Text.RegularExpressions;  // <-- required for Regex
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Financify.Controllers
 {
@@ -19,7 +22,6 @@ namespace Financify.Controllers
 
         public IActionResult Register()
         {
-            // Set the current action as "Register" to control layout behavior
             ViewData["CurrentAction"] = "Register";
             return View();
         }
@@ -29,12 +31,20 @@ namespace Financify.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Uncomment below to enforce UserId to be alphabets only
+                /*
+                if (!Regex.IsMatch(model.UserId, "^[a-zA-Z]+$"))
+                {
+                    ModelState.AddModelError("UserId", "User ID should contain only alphabets.");
+                    return View(model);
+                }
+                */
+
                 var user = new ApplicationUser { UserName = model.UserId, FullName = model.FullName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // Redirect to Login page after registration
                     return RedirectToAction("Login");
                 }
                 foreach (var error in result.Errors)
@@ -47,7 +57,6 @@ namespace Financify.Controllers
 
         public IActionResult Login()
         {
-            // Set the current action as "Login" to control layout behavior
             ViewData["CurrentAction"] = "Login";
             return View();
         }
@@ -57,6 +66,15 @@ namespace Financify.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Uncomment below to enforce UserId to be alphabets only during login
+                /*
+                if (!Regex.IsMatch(model.UserId, "^[a-zA-Z]+$"))
+                {
+                    ModelState.AddModelError("UserId", "User ID should contain only alphabets.");
+                    return View(model);
+                }
+                */
+
                 var result = await _signInManager.PasswordSignInAsync(model.UserId, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
@@ -72,6 +90,75 @@ namespace Financify.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        // Profile action to display user details
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);  // Get the current logged-in user
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new ProfileViewModel
+            {
+                FullName = user?.FullName ?? string.Empty,
+                UserId = user?.UserName ?? string.Empty,
+                Email = user?.Email ?? string.Empty
+            };
+
+            return View(model);  // Pass user data to the Profile view
+        }
+
+        // EditProfile action to handle the editing of user details (GET)
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new EditProfileViewModel
+            {
+                FullName = user?.FullName ?? string.Empty,
+                UserId = user?.UserName ?? string.Empty,
+                Email = user?.Email ?? string.Empty
+            };
+
+            return View(model);  // Pass user data to the EditProfile view
+        }
+
+        // EditProfile action to handle the form submission and save the updated data (POST)
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                user.FullName = model.FullName;
+                user.UserName = model.UserId;
+                user.Email = model.Email;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Profile");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View(model);  // Return to EditProfile if validation fails
         }
     }
 }

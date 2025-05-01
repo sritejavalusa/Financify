@@ -6,98 +6,92 @@
 <div class="container">
 
     <h1 class="mb-4">Welcome to your personal finance dashboard!</h1>
-    <p class="lead">This page is where you can access all the tools you need to manage your finances effectively. You can create budgets, view budgets, input transactions, view transaction history, track your savings, and learn how to use the app.</p>
+    <p class="lead">This page is where you can access all the tools you need to manage your finances effectively. You
+        can create budgets, view budgets, input transactions, view transaction history, track your savings, and learn
+        how to use the app.</p>
 
     <hr />
 
     <div class="row">
-
         <div class="col-md-6">
-
             <div class="card">
-
                 <div class="card-header bg-custom text-white font-weight-bold">
                     Budget Creation and Tracking
                 </div>
-
                 <div class="card-body">
                     <p class="card-text">Create and track your budgets here.</p>
-
                     <a asp-controller="Budget" asp-action="Create" class="btn btn-organisation-1">Create New Budget</a>
                     <a asp-controller="Budget" asp-action="ViewBudgets" class="btn btn-organisation-2">View Budgets</a>
                 </div>
-
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="card">
-
                 <div class="card-header bg-custom text-white font-weight-bold">
                     Expense Creation and Tracking
                 </div>
-
-                <div class="card-body ">
+                <div class="card-body">
                     <p class="card-text">Track your daily expenses with ease.</p>
-
-                    <a asp-controller="Expense" asp-action="CreateExpense" class="btn btn-organisation-1"> Add Transaction</a>
-                    <a asp-controller="Expense" asp-action="ViewExpenses" class="btn btn-organisation-1"> Transaction History</a>
-                    <a asp-controller="Reports" asp-action="CategoryWiseGraph" class="btn btn-organisation-1">Category-wise Spending</a>
-                    <a asp-controller="Reports" asp-action="BudgetVsActual" class="btn btn-organisation-1">Budget vs Actual</a>
-                
+                    <a asp-controller="Expense" asp-action="CreateExpense" class="btn btn-organisation-1">Add Transaction</a>
+                    <a asp-controller="Expense" asp-action="ViewExpenses" class="btn btn-organisation-1">Transaction History</a>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-custom text-white font-weight-bold">
+                    Category-wise Spending
+                </div>
+                <div class="card-body">
+                    <p class="card-text">View your spending by category.</p>
+                    <a asp-controller="Reports" asp-action="CategoryWiseGraph" class="btn btn-organisation-1">Category-wise Spending</a>
+                </div>
+            </div>
+        </div>
 
         <div class="col-md-6">
-
             <div class="card">
+                <div class="card-header bg-custom text-white font-weight-bold">
+                    Budget vs Actual
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Compare your planned budget with actual expenses.</p>
+                    <a asp-controller="Reports" asp-action="BudgetVsActual" class="btn btn-organisation-1">Budget vs Actual</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
                 <div class="card-header bg-custom text-white font-weight-bold">
                     Savings Tracking
                 </div>
-
                 <div class="card-body">
                     <p class="card-text">Track your Savings here.</p>
-                    <a asp-controller="Savings" asp-action="Create" class="btn btn-organisation-1"> Add Savings</a>
-                    <a asp-controller="Savings" asp-action="Track" class="btn btn-organisation-1"> Track Progress</a>
-                </div>                
-
+                    <a asp-controller="Savings" asp-action="Create" class="btn btn-organisation-1">Add Savings</a>
+                    <a asp-controller="Savings" asp-action="Track" class="btn btn-organisation-1">Track Progress</a>
+                </div>
             </div>
-
         </div>
 
         <div class="col-md-6">
-
             <div class="card">
-
                 <div class="card-header bg-custom text-white font-weight-bold">
                     How to Use the App?
                 </div>
-
                 <div class="card-body">
                     <p class="card-text">Learn how to create budgets and add transactions.</p>
-                    <a asp-controller="Home"    asp-action="AboutApp          class="btn btn-organisation-1">Learn More</a>
-                    </div>
-
+                    <a asp-controller="Home" asp-action="AboutApp" class="btn btn-organisation-1">Learn More</a>
+                </div>
             </div>
-
         </div>
-
     </div>
 
     <br />
-
 </div>
-
-@section styles {
-    <!-- Custom styling can go here -->
-}

@@ -1,0 +1,19 @@
+@model Financify.ViewModels.EditProfileViewModel
+
+<h2>Edit Profile</h2>
+
+<form asp-action="EditProfile" method="post">
+    <div class="form-group">
+        <label for="FullName">Full Name</label>
+        <input type="text" class="form-control" id="FullName" name="FullName" value="@Model.FullName" required />
+    </div>
+    <div class="form-group">
+        <label for="UserId">User ID</label>
+        <input type="text" class="form-control" id="UserId" name="UserId" value="@Model.UserId" readonly />
+    </div>
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

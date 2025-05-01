@@ -5,6 +5,9 @@ namespace Financify.ViewModels
     public class LoginViewModel
     {
         [Required]
+        //[Display(Name = "User ID")]
+        //[RegularExpression("^[a-zA-Z]+$", ErrorMessage = "User ID should contain only alphabets")]
+        
         [Display(Name = "User ID")]
         public required string UserId { get; set; }
 

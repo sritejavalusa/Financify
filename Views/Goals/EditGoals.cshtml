@@ -1,0 +1,19 @@
+@model Financify.Models.Goal
+
+<h2>Edit Goal</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label for="GoalName">Goal Name</label>
+        <input type="text" class="form-control" id="GoalName" name="GoalName" value="@Model.GoalName" required />
+    </div>
+    <div class="form-group">
+        <label for="TargetAmount">Target Amount</label>
+        <input type="number" class="form-control" id="TargetAmount" name="TargetAmount" value="@Model.TargetAmount" required />
+    </div>
+    <div class="form-group">
+        <label for="TargetDate">Target Date</label>
+        <input type="date" class="form-control" id="TargetDate" name="TargetDate" value="@Model.TargetDate.ToString("yyyy-MM-dd")" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

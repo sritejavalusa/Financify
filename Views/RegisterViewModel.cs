@@ -8,6 +8,7 @@ namespace Financify.ViewModels
         public string FullName { get; set; }
 
         [Required]
+        //[RegularExpression("^[a-zA-Z]+$", ErrorMessage = "User ID should contain only alphabets")]
         public string UserId { get; set; }
 
         [Required]

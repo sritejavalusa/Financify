@@ -1,0 +1,37 @@
+@model IEnumerable<Financify.Models.Goal>
+
+<h2>Your Goals</h2>
+
+<a class="btn btn-primary" asp-action="Create">Create New Goal</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Goal</th>
+            <th>Target Amount</th>
+            <th>Current Amount</th>
+            <th>Progress</th>
+            <th>Target Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var goal in Model)
+        {
+            <tr>
+                <td>@goal.GoalName</td>
+                <td>@goal.TargetAmount</td>
+                <td>@goal.CurrentAmount</td>
+                <td>@goal.ProgressPercentage %</td>
+                <td>@goal.TargetDate.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@goal.GoalId">Edit</a>
+                    <form method="post" asp-action="UpdateProgress" asp-route-goalId="@goal.GoalId" class="d-inline">
+                        <input type="number" name="amount" class="form-control" placeholder="Amount Saved" required />
+                        <button type="submit" class="btn btn-success">Update Progress</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
