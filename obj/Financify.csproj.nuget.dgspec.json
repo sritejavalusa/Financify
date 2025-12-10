@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\HP\\Downloads\\ReBuild\\Financify\\Financify\\Financify.csproj": {}
+    "C:\\Git\\Financify\\Financify.csproj": {}
   },
   "projects": {
-    "C:\\Users\\HP\\Downloads\\ReBuild\\Financify\\Financify\\Financify.csproj": {
+    "C:\\Git\\Financify\\Financify.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HP\\Downloads\\ReBuild\\Financify\\Financify\\Financify.csproj",
+        "projectUniqueName": "C:\\Git\\Financify\\Financify.csproj",
         "projectName": "Financify",
-        "projectPath": "C:\\Users\\HP\\Downloads\\ReBuild\\Financify\\Financify\\Financify.csproj",
+        "projectPath": "C:\\Git\\Financify\\Financify.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HP\\Downloads\\ReBuild\\Financify\\Financify\\obj\\",
+        "outputPath": "C:\\Git\\Financify\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -100,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.105/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.112/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

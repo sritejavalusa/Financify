@@ -10,10 +10,10 @@ namespace Financify.Models
         public int GoalId { get; set; }
 
         [Required]
-        public string UserId { get; set; }  // Link to user
+        public string? UserId { get; set; }  // Link to user
 
         [Required]
-        public string GoalName { get; set; }  // Example: "Save for new phone"
+        public string? GoalName { get; set; }  // Example: "Save for new phone"
 
         [Required]
         public decimal TargetAmount { get; set; }  // Example: 15000 (amount to save)
@@ -34,6 +34,6 @@ namespace Financify.Models
         }
 
         // User navigation property
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

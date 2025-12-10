@@ -55,7 +55,7 @@
                         </li>
 
                         @* Show options when user is logged in *@
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li>
                                 <a class="navbar-link icon-box" href="@Url.Action("Profile", "Account")">
@@ -76,7 +76,7 @@
                         else
                         {
                             @* Hide login button on Login/Register pages *@
-                            @if (ViewData["CurrentAction"] != "Login" && ViewData["CurrentAction"] != "Register")
+                            @if ((ViewData["CurrentAction"] as string != "Login") && (ViewData["CurrentAction"] as string != "Register"))
                             {
                                 <li>
                                     <a class="navbar-link icon-box" asp-area="" asp-controller="Account" asp-action="Login">

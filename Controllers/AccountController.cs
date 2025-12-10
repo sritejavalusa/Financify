@@ -40,6 +40,13 @@ namespace Financify.Controllers
                 }
                 */
 
+                // Ensure password is provided to avoid passing a possible null to CreateAsync
+                if (string.IsNullOrWhiteSpace(model?.Password))
+                {
+                    ModelState.AddModelError("Password", "Password is required.");
+                    return View(model);
+                }
+
                 var user = new ApplicationUser { UserName = model.UserId, FullName = model.FullName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -150,6 +157,7 @@ namespace Financify.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["SuccessMessage"] = "Profile updated successfully!";
                     return RedirectToAction("Profile");
                 }
 

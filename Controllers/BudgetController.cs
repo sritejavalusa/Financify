@@ -64,15 +64,20 @@ namespace Financify.Controllers
         // STEP 2: Budget entry for selected month/year
         public IActionResult CreateMonthly()
         {
-            if (TempData["TargetMonth"] == null || TempData["TargetYear"] == null)
+            var targetMonthObj = TempData["TargetMonth"];
+            var targetYearObj = TempData["TargetYear"];
+
+            if (targetMonthObj == null || targetYearObj == null)
                 return RedirectToAction("Create");
 
-            if (TempData["TargetMonth"] != null && int.TryParse(TempData["TargetMonth"].ToString(), out int targetMonth))
-                ViewBag.Month = targetMonth;
-            else
+            if (!int.TryParse(targetMonthObj.ToString(), out int targetMonth))
                 return RedirectToAction("Create");
 
-            ViewBag.Year = (int)TempData["TargetYear"];
+            if (!int.TryParse(targetYearObj.ToString(), out int targetYear))
+                return RedirectToAction("Create");
+
+            ViewBag.Month = targetMonth;
+            ViewBag.Year = targetYear;
 
             if (TempData["SuccessMessage"] != null)
                 ViewBag.SuccessMessage = TempData["SuccessMessage"];
@@ -85,8 +90,13 @@ namespace Financify.Controllers
         public async Task<IActionResult> CreateMonthly(Budget budget)
         {
             var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
+            if (userId == null)
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View(budget);
+            }
 
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 ModelState.AddModelError("", "User not found.");

@@ -9,9 +9,9 @@ namespace Financify.Models
     public class Badge
     {
         public int BadgeId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string IconUrl { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? IconUrl { get; set; }
         public decimal? ThresholdAmount { get; set; }
         public int? StreakRequired { get; set; }
 

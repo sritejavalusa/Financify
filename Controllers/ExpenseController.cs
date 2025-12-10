@@ -48,15 +48,40 @@ namespace Financify.Controllers
         }
 
         // GET: Expense/ViewExpenses
-        public IActionResult ViewExpenses()
+        public IActionResult ViewExpenses(int? month, int? year)
         {
             var userId = _userManager.GetUserId(User);
-            var expenses = _context.Expenses
-                .Where(e => e.UserId == userId)
+
+            var now = DateTime.UtcNow;
+            int m = month ?? now.Month;
+            int y = year ?? now.Year;
+
+            // clamp invalids
+            m = Math.Clamp(m, 1, 12);
+
+            var expensesQuery = _context.Expenses
+                .Where(e => e.UserId == userId
+                            && e.Date.Year == y
+                            && e.Date.Month == m);
+
+            var expenses = expensesQuery
                 .OrderByDescending(e => e.Date)
                 .ToList();
 
-            return View(expenses);
+            var byCategory = expenses
+                .GroupBy(e => (e.Category ?? "Uncategorized").Trim())
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
+
+            var vm = new ExpenseListViewModel
+            {
+                Expenses = expenses,
+                Month = m,
+                Year = y,
+                Total = expenses.Sum(e => e.Amount),
+                ByCategory = byCategory
+            };
+
+            return View(vm);
         }
 
         // GET: Expense/EditExpense/{id}
