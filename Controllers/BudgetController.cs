@@ -93,6 +93,8 @@ namespace Financify.Controllers
             if (userId == null)
             {
                 ModelState.AddModelError("", "User not found.");
+                ViewBag.Month = budget.Month;
+                ViewBag.Year = budget.Year;
                 return View(budget);
             }
 
@@ -108,6 +110,8 @@ namespace Financify.Controllers
 
             if (!ModelState.IsValid)
             {
+                ViewBag.Month = budget.Month;
+                ViewBag.Year = budget.Year;
                 return View(budget);
             }
 
@@ -116,18 +120,22 @@ namespace Financify.Controllers
                 _context.Add(budget);
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = $"✅ Budget created for {new DateTime(budget.Year, budget.Month, 1):MMMM yyyy}";
-                TempData["TargetMonth"] = budget.Month;
-                TempData["TargetYear"] = budget.Year;
+                ViewBag.Month = budget.Month;
+                ViewBag.Year = budget.Year;
+                ViewBag.SuccessMessage = $"✅ Budget created for {new DateTime(budget.Year, budget.Month, 1):MMMM yyyy}";
 
-                return RedirectToAction("CreateMonthly");
+                // Reset the form fields but keep month/year
+                return View(new Budget { Month = budget.Month, Year = budget.Year });
             }
             catch (Exception ex)
             {
                 Console.WriteLine("DB ERROR: " + ex.Message);
                 ModelState.AddModelError("", "❌ Failed to save budget to database.");
+                ViewBag.Month = budget.Month;
+                ViewBag.Year = budget.Year;
                 return View(budget);
             }
+
         }
 
         // View Budgets by Month/Year
