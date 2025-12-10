@@ -137,6 +137,8 @@ namespace Financify.Controllers
             return View(model);  // Pass user data to the EditProfile view
         }
 
+
+
         // EditProfile action to handle the form submission and save the updated data (POST)
         [HttpPost]
         public async Task<IActionResult> EditProfile(EditProfileViewModel model)
@@ -149,16 +151,17 @@ namespace Financify.Controllers
                     return RedirectToAction("Login");
                 }
 
+                // Update allowed fields
                 user.FullName = model.FullName;
-                user.UserName = model.UserId;
                 user.Email = model.Email;
+                // Do NOT change user.UserName (UserId)
 
                 var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
                 {
                     TempData["SuccessMessage"] = "Profile updated successfully!";
-                    return RedirectToAction("Profile");
+                    return RedirectToAction("EditProfile");
                 }
 
                 foreach (var error in result.Errors)
@@ -166,7 +169,48 @@ namespace Financify.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
             }
+
             return View(model);  // Return to EditProfile if validation fails
         }
+
+
+
+        // ChangePassword action to handle password update
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "User not found.";
+                    return RedirectToAction("EditProfile");
+                }
+
+                var result = await _userManager.ChangePasswordAsync(
+                    user,
+                    model.CurrentPassword,
+                    model.NewPassword
+                );
+
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "Password changed successfully!";
+                    return RedirectToAction("EditProfile");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    TempData["ErrorMessage"] = error.Description;
+                }
+
+                return RedirectToAction("EditProfile");
+            }
+
+            TempData["ErrorMessage"] = "Invalid input.";
+            return RedirectToAction("EditProfile");
+        }
+
     }
 }
