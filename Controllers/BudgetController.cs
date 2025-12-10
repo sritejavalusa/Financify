@@ -193,8 +193,7 @@ namespace Financify.Controllers
                 // Set success message in TempData
                 TempData["SuccessMessage"] = $"✅ Budget updated for {new DateTime(existing.Year, existing.Month, 1):MMMM yyyy}";
 
-                // Redirect to GET Edit to display updated page with success message
-                return RedirectToAction("Edit", new { id = existing.BudgetId });
+                return View("EditBudgets", budget);
             }
             catch (Exception ex)
             {

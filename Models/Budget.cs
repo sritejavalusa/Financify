@@ -22,18 +22,23 @@ namespace Financify.Models
         public int Year { get; set; }
 
         [Required]
+        [Range(0,  100000, ErrorMessage = "Income must be zero or positive")]
         public decimal Income { get; set; }
 
         [Required]
+        [Range(0, 100000, ErrorMessage = "FoodBudget must be zero or positive")]
         public decimal FoodBudget { get; set; }
 
         [Required]
+        [Range(0, 100000, ErrorMessage = "HousingBudget must be zero or positive")]
         public decimal HousingBudget { get; set; }
 
         [Required]
+        [Range(0, 100000, ErrorMessage = "EntertainmentBudget must be zero or positive")]
         public decimal EntertainmentBudget { get; set; }
 
         [Required]
+        [Range(0, 100000, ErrorMessage = "OtherBudget must be zero or positive")]
         public decimal OtherBudget { get; set; }
 
         // ✅ Automatically calculated; not stored in DB

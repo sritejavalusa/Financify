@@ -14,6 +14,7 @@ namespace Financify.Models
         public string MonthName => new DateTime(Year, Month, 1).ToString("MMMM yyyy");
 
         // Summary
+        
         public decimal Total { get; set; }
         public Dictionary<string, decimal> ByCategory { get; set; } = new();
     }

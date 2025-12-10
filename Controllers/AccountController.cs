@@ -5,7 +5,9 @@ using Financify.ViewModels;
 using System.Text.RegularExpressions;  // <-- required for Regex
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using System.Net.Mail;
+using System.Net;
+
 
 namespace Financify.Controllers
 {
@@ -20,6 +22,7 @@ namespace Financify.Controllers
             _signInManager = signInManager;
         }
 
+        // ==================== Register ====================
         public IActionResult Register()
         {
             ViewData["CurrentAction"] = "Register";
@@ -31,16 +34,6 @@ namespace Financify.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Uncomment below to enforce UserId to be alphabets only
-                /*
-                if (!Regex.IsMatch(model.UserId, "^[a-zA-Z]+$"))
-                {
-                    ModelState.AddModelError("UserId", "User ID should contain only alphabets.");
-                    return View(model);
-                }
-                */
-
-                // Ensure password is provided to avoid passing a possible null to CreateAsync
                 if (string.IsNullOrWhiteSpace(model?.Password))
                 {
                     ModelState.AddModelError("Password", "Password is required.");
@@ -62,6 +55,7 @@ namespace Financify.Controllers
             return View(model);
         }
 
+        // ==================== Login ====================
         public IActionResult Login()
         {
             ViewData["CurrentAction"] = "Login";
@@ -73,15 +67,6 @@ namespace Financify.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Uncomment below to enforce UserId to be alphabets only during login
-                /*
-                if (!Regex.IsMatch(model.UserId, "^[a-zA-Z]+$"))
-                {
-                    ModelState.AddModelError("UserId", "User ID should contain only alphabets.");
-                    return View(model);
-                }
-                */
-
                 var result = await _signInManager.PasswordSignInAsync(model.UserId, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
@@ -93,16 +78,17 @@ namespace Financify.Controllers
             return View(model);
         }
 
+        // ==================== Logout ====================
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
 
-        // Profile action to display user details
+        // ==================== Profile ====================
         public async Task<IActionResult> Profile()
         {
-            var user = await _userManager.GetUserAsync(User);  // Get the current logged-in user
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return RedirectToAction("Login");
@@ -115,17 +101,15 @@ namespace Financify.Controllers
                 Email = user?.Email ?? string.Empty
             };
 
-            return View(model);  // Pass user data to the Profile view
+            return View(model);
         }
 
-        // EditProfile action to handle the editing of user details (GET)
+        // ==================== EditProfile ====================
         public async Task<IActionResult> EditProfile()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
                 return RedirectToAction("Login");
-            }
 
             var model = new EditProfileViewModel
             {
@@ -134,12 +118,9 @@ namespace Financify.Controllers
                 Email = user?.Email ?? string.Empty
             };
 
-            return View(model);  // Pass user data to the EditProfile view
+            return View(model);
         }
 
-
-
-        // EditProfile action to handle the form submission and save the updated data (POST)
         [HttpPost]
         public async Task<IActionResult> EditProfile(EditProfileViewModel model)
         {
@@ -147,14 +128,10 @@ namespace Financify.Controllers
             {
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
-                {
                     return RedirectToAction("Login");
-                }
 
-                // Update allowed fields
                 user.FullName = model.FullName;
                 user.Email = model.Email;
-                // Do NOT change user.UserName (UserId)
 
                 var result = await _userManager.UpdateAsync(user);
 
@@ -169,13 +146,10 @@ namespace Financify.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
             }
-
-            return View(model);  // Return to EditProfile if validation fails
+            return View(model);
         }
 
-
-
-        // ChangePassword action to handle password update
+        // ==================== Change Password ====================
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -188,11 +162,7 @@ namespace Financify.Controllers
                     return RedirectToAction("EditProfile");
                 }
 
-                var result = await _userManager.ChangePasswordAsync(
-                    user,
-                    model.CurrentPassword,
-                    model.NewPassword
-                );
+                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
 
                 if (result.Succeeded)
                 {
@@ -204,7 +174,6 @@ namespace Financify.Controllers
                 {
                     TempData["ErrorMessage"] = error.Description;
                 }
-
                 return RedirectToAction("EditProfile");
             }
 
@@ -212,5 +181,38 @@ namespace Financify.Controllers
             return RedirectToAction("EditProfile");
         }
 
+        // ==================== Forgot Password ====================
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                TempData["InfoMessage"] = "If the email exists, a password reset link has been sent.";
+                return RedirectToAction("Login");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = Url.Action("ResetPassword", "Account",
+                new { token = token, email = model.Email },
+                protocol: HttpContext.Request.Scheme);
+
+            // Send email using EmailService
+            await EmailService.SendEmailAsync(model.Email, "Password Reset",
+                $"Click this link to reset your password: <a href='{resetLink}'>Reset Password</a>");
+
+            TempData["InfoMessage"] = "If the email exists, a password reset link has been sent.";
+            return RedirectToAction("Login");
+        }
     }
 }

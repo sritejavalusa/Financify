@@ -22,6 +22,7 @@ namespace Financify.Models
         public required string Category { get; set; }
 
         [Required]
+        [Range(0,  100000, ErrorMessage = "Amount must be zero or positive")]
         public decimal Amount { get; set; }
 
         public string? Notes { get; set; }
